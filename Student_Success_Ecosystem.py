@@ -2,16 +2,21 @@
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from sklearn.metrics import accuracy_score
 
 # reading dataset
 
 df = pd.read_csv("college_student_placement_dataset.csv")
 
-# checking first 5 rows
+# checking first 20 rows
 
-print(df.head())
+print(df.head(20))
+
+# Shape of dataset
+
+print("\nDataset Shape :", df.shape)
 
 # removing unnecessary column
 
@@ -44,21 +49,42 @@ x_train, x_test, y_train, y_test = train_test_split(
     random_state=1
 )
 
-# creating model
+# creating logistic regression model
 
-rf = RandomForestClassifier()
+model = LogisticRegression()
 
 # training model
 
-rf.fit(x_train, y_train)
+model.fit(x_train, y_train)
+
+# testing model
+
+predictions = model.predict(x_test)
 
 # checking accuracy
-
-predictions = rf.predict(x_test)
 
 accuracy = accuracy_score(y_test, predictions)
 
 print("\nModel Accuracy :", accuracy * 100)
+
+# confusion matrix
+
+cm = confusion_matrix(y_test, predictions)
+
+print("\nConfusion Matrix :")
+print(cm)
+
+# precision
+
+precision = precision_score(y_test, predictions)
+
+print("\nPrecision :", precision)
+
+# recall
+
+recall = recall_score(y_test, predictions)
+
+print("Recall :", recall)
 
 # sample student details
 
@@ -86,16 +112,17 @@ student_data = [[
 
 # placement prediction
 
-result = rf.predict(student_data)
+result = model.predict(student_data)
 
-probability = rf.predict_proba(student_data)
+probability = model.predict_proba(student_data)
 
 print("\nPlacement Probability :", probability[0][1] * 100)
 
-# final placement result
+# final result
 
 if result[0] == 1:
     print("Student may get placed")
+
 else:
     print("Student placement chances are low")
 
@@ -113,7 +140,7 @@ print("\nStudent Success Score :", score)
 
 # skill gap analysis
 
-print("\nAnalysis Report")
+print("\nSkill Gap Analysis")
 
 if communication < 5:
     print("- Improve communication skills")
@@ -127,7 +154,7 @@ if internship == 0:
 if cgpa > 8:
     print("- Academic performance is very good")
 
-# learning recommendations
+# learning recommendation
 
 print("\nRecommended Learning")
 
